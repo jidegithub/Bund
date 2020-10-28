@@ -1,0 +1,22 @@
+  <%= form_for @changeset, @action, [as: :user], fn f -> %>
+    <%= if @changeset.action do %>
+      <div class="alert alert-danger">
+        <p>Oops, something went wrong! Please check the errors below.</p>
+      </div>
+    <% end %>
+    <div>
+      <p class="text-xl mb-16">Enter your email address you're using for your account below <br> 
+        and we will send you a password reset link.
+      </p>
+    </div>
+
+    <%= label f, :email %>
+    <%= text_input f, :email, class: "w-400" %>
+    <%= error_tag f, :email %>
+
+    <div>
+      <%= submit "Request Reset Link", class: "w-400 background_clr border-transparent my-16" %>
+    </div>
+  <% end %>
+  
+

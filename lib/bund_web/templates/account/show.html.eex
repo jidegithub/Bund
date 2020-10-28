@@ -1,0 +1,81 @@
+<div id="account-detail" class="mx-10">
+  <div class="flex mt-6">
+      <div>
+        <div><%= link to: Routes.account_path(@conn, :index), class: "flex" do %>
+        <i class="fas fa-arrow-left fa-2x text-blue-900"></i>
+        <span class="text-blue-900 font-semibold text-xl mx-4">Back </span>
+        <% end %>
+        </div>       
+      </div>
+      <%# Buttons %>
+      <div class="flex ml-auto">
+            <button id="account-export" class="inline-flex mx-8 border-blue-800 items-center h-10 text-blue-800 bg-white justify-center ">
+              <i class="fas fa-sign-out-alt transform -rotate-90"></i>
+              <span class="ml-2 leading-tight">Export</span>
+            </button>
+            <button id="account-edit" class="inline-flex w-48 mr-8 items-center border-blue-800 bg-white text-blue-800 h-10 justify-center ">
+              <i class='fas fa-pen fa-sm'></i>
+              <span class="ml-2 leading-tight">Edit</span>
+            </button>
+            <button id="account-delete" class="inline-flex items-center justify-center ">
+              <i class="fas fa-trash"></i>
+              <span class="ml-2 leading-tight">Delete</span>
+            </button>
+      </div>
+  </div>
+  <div class="mt-8"><h1 class="font-bold text-blue-900 text-4xl"> <%= @account.company %> </h1></span><div>
+  <div class="flex mt-8">
+      <%# Table 1 %>
+      <div>
+          <table class="text-left text-blue-900 table-auto">
+            <tr >
+              <th class="font-bold  text-xl align-top py-3">Email:</th>
+              <td class="text-xl font-medium px-3"><%= @account.email_address %></td>
+            </tr>
+            <tr>
+              <th class="font-bold text-xl align-top py-3">Phone:</th>
+              <td class="text-xl font-medium py-3 px-3"><%= @account.phone %></td>
+            </tr>
+            <tr>
+              <th class="font-bold text-xl align-top py-3">Address:</th>
+              <td class="text-xl font-medium  py-3 px-3">
+              <span><%= @account.street %> </span> 
+              <span> <%= @account.city %>, </span>
+              <span> <%= @account.state %> </span>
+              <span><%= @account.country %></span>
+              </td>
+            </tr>
+          </table>      
+      </div>
+      <%# Table 2 %>
+      <div class="ml-12">
+           <table class="text-left text-blue-900 table-auto">
+            <tr>
+              <th class="font-bold text-xl align-top min-w-20 py-3">Account ID:</th>
+              <td class="text-xl font-medium px-4 py-3"><%= @account.id %></td>
+            </tr>
+            <tr>
+              <th class="font-bold text-xl align-top py-3">Status:</th>
+              <td class="text-xl font-medium px-4 py-3"><%= @account.status %></td>
+            </tr>
+            <tr>
+              <th class="font-bold text-xl align-top py-3">Sector:</th>
+              <td class="text-xl font-medium px-4 py-3"> <%= @account.sector %></td>
+            </tr>
+            <tr>
+              <th class="font-bold text-xl align-top py-3">Notes:</th>
+              <td class="text-xl font-medium max-w-2xl px-4 py-3"><%= @account.note %></td>
+            </tr>
+          </table>  
+      </div>
+  </div>
+  <div class="">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tab-pane label="Activity" name="activity">Activity</el-tab-pane>
+    <el-tab-pane label="Task" name="task">Task</el-tab-pane>
+    <el-tab-pane label="Email" name="email">Email</el-tab-pane>
+    <el-tab-pane label="Call" name="call">Call</el-tab-pane>
+    <el-tab-pane label="Note" name="note">Note</el-tab-pane>
+    </el-tabs>
+  </div>
+</div>

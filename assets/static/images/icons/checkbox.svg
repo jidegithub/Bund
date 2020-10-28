@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="UI_Icon_Glyph_Checkmark_support-02" width="16" height="16" data-name="UI Icon/Glyph/Checkmark/$support-02" viewBox="0 0 16 16">
+    <defs>
+        <style>
+            .cls-1{fill:#5aa700}
+        </style>
+    </defs>
+    <path id="checkmark" d="M8 16a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8zM4.707 7.168L3.293 8.582l3.457 3.457 5.957-5.957-1.414-1.414L6.75 9.211 4.707 7.168z" class="cls-1"/>
+</svg>

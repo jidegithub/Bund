@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Bund · Perfect CRM</title>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+  </head>
+  <body>
+    <%= if @current_user do %>
+    <div id="nav-bar">
+
+
+
+        <div class="flex">
+          <div class="w-full background_clr h-14 pl-15 pt-2 items-center ">
+            <img src="<%= Routes.static_url(@conn, "/images/bund_main.svg") %>" alt="Bund CRM Logo" />
+          </div>
+
+          <div class="w-full background_clr h-14 pl-15 pr-10 text-white flex justify-end items-center text-xl">
+              <div><i class="fas fa-bell text-2xl mr-10"></i></div>
+              <div><i class="fas fa-question-circle text-2xl mr-10"></i></div>
+              
+              <div>
+                <button  v-on:click="isOpenDropDownPr = !isOpenDropDownPr" class="relative px-0 py-0 tracking-normal bg-transparent border-none focus:outline-none items-center capitalize z-20">
+                  <span class="ml-20 inline-block align-top mt-0 leading-custom-32px"><%= @current_user.first_name %></span>
+                  <i class="far fa-user-circle text-3xl ml-4"></i>
+                  <i class="fas fa-chevron-down text-2xl ml-4"></i></div>
+                </button>
+                <button v-if="isOpenDropDownPr" @click="isOpenDropDownPr = false" tabindex="-1" class="fixed inset-0 h-full w-full bg-black opacity-0 cursor-default border-none focus:outline-none z-10"></button>
+              </div>
+          </div>
+          
+
+          <div v-if="isOpenDropDownPr" id="dropdown-pr" class="relative">
+            <div class="absolute right-0 text-xl mr-10 w-96 pt-8 font-bold bg-white shadow-xl z-20"> 
+              <div class="flex">
+                <i class="w-8 far fa-user-circle text-6xl ml-8"></i>  
+                <div class="ml-4">
+                  <div><%= "#{@current_user.first_name} #{@current_user.surname}" || "No FirstName" %></div>
+                  <div class="text-base"><%= @current_user.email %></div>
+                </div>
+                <%# <button class="block mx-8 h-8 w-8 rounded-full overflow-hidden border-2 border-gray-600 focus:outline-none focus:border-white">
+                  <img class="h-full w-full object-cover" src="" alt="Your avatar">
+                </button> %>
+              </div>
+              
+              <div class="mt-2 py-2 w-96">
+                <hr class="style-six mt-2 mb-4 " />
+                <a href="#" class="block px-8 py-2 text-custom-main hover:bg-gray-200 hover:text-white">Edit Profile</a>
+                <a href="#" class="block px-8 py-2 text-custom-main hover:bg-gray-200 hover:text-white">Settings</a>
+                <hr class="style-six my-2" />
+                <span><%= link "Log Out", to: Routes.pow_session_path(@conn, :delete), method: :delete, class: "block px-8 py-2 text-custom-main hover:bg-gray-200 hover:text-white" %></span>
+              </div>
+            </div>      
+          </div>
+
+            <div class="flex mb-4">
+          <ul class="flex w-full bg-gray-300 h-14">
+            <li class="ml-5 mr-3">
+              <%= link "Dashboard", to: Routes.dashboard_path(@conn, :index), class: "inline-block pt-3 pb-2 px-10 text-custom-nav-item #{is_active_module?(@conn, "Dashboard")}" %>
+            </li>
+            <li class="mx-3">
+              <%= link "Accounts", to: Routes.account_path(@conn, :index), class: "inline-block pt-3 pb-2 px-10 text-custom-nav-item #{is_active_module?(@conn, "Account")}" %>
+            </li>
+            <li class="mx-3">
+              <a class="inline-block pt-3 pb-2 px-10 text-custom-nav-item" href="#">Leads</a>
+            </li>
+            <li class="mx-3">
+              <a class="inline-block pt-3 pb-2 px-10 text-custom-nav-item" href="#">Report</a>
+            </li>
+            <li class="mx-3">
+              <a class="inline-block pt-3 pb-2 px-10 text-custom-nav-item" href="#">Interaction</a>
+            </li>
+          </ul>
+          </div>
+        </div>
+
+
+
+    </div>
+    <% end %>
+
+    
+    <main role="main">
+      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <%= render @view_module, @view_template, assigns %>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>

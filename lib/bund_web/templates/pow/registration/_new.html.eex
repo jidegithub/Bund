@@ -1,0 +1,72 @@
+<%= form_for @changeset, @action, [as: :user], fn f -> %>
+    <img src="/images/icons/Bund_M.svg" alt="Bund icon" class="bund-icon mb-10">
+    <h3 class="primary_txt-clr mb-8">Hi there, let’s get you all set up</h3>
+    <div class="flex flex-wrap -mx-3 mb-4">
+    <div class="w-full md:w-6/12 px-3 mb-6 md:mb-0">
+        <label class="block tracking-wide text-xl font-bold mb-2">
+        First Name
+        </label>
+        <%= text_input f, :first_name, class: "appearance-none block w-full bg-gray-200 border py-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white", placeholder: "First Name"%>
+    </div>
+    <div class="w-full md:w-6/12 px-3">
+        <label class="block tracking-wide text-xl font-bold mb-2">
+        Surname
+        </label>
+        <%= text_input f, :surname, class: "appearance-none block w-full bg-gray-200 border py-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white", placeholder: "First Name"%>
+    </div>
+    </div>
+
+    <div class="flex flex-wrap -mx-3 mb-4">
+        <div class="w-full px-3 mb-6 md:mb-0">
+            <label class="block tracking-wide text-xl font-bold mb-2">
+            Company Name
+            </label>
+            <%= text_input f, :company_name, class: "appearance-none block w-full bg-gray-200 border py-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white", placeholder: "Company Name" %>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap -mx-3 mb-4">
+    <div class="w-full px-3 mb-6 md:mb-0">
+        <label class="block tracking-wide text-xl font-bold mb-2">
+        Email Address
+        </label>
+        <%= text_input f, Pow.Ecto.Schema.user_id_field(@changeset), class: "appearance-none block w-full bg-gray-200 border py-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white", placeholder: "Fill Email Address"  %>
+    </div>
+    </div>
+
+    <div class="flex flex-wrap -mx-3 mb-4">
+    <div class="w-full md:w-6/12 px-3 mb-6 md:mb-0">
+        <label class="block tracking-wide text-xl font-bold mb-2">
+        Phone No
+        </label>
+        <%= text_input f, :phone_number, class: "appearance-none block w-full bg-gray-200 border py-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white", placeholder: "Phone Number" %>
+    </div>
+    <div class="w-full md:w-6/12 px-3">
+        <label class="block tracking-wide text-xl font-bold mb-2">
+        No of Employees
+        </label>
+        <%= text_input f, :no_of_employees, class: "appearance-none block w-full bg-gray-200 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500", placeholder: "Enter a number" %>
+    </div>
+    </div>
+
+    <div class="flex flex-wrap -mx-3 mb-4">
+    <div class="w-full md:w-6/12 px-3 mb-6 md:mb-0">
+        <label class="block tracking-wide text-xl font-bold mb-2">
+        Password
+        </label>
+        <%= password_input f, :password, class: "appearance-none block w-full bg-gray-200 border py-3 px-4 mb-2 leading-tight focus:outline-none focus:bg-white" %>
+    </div>
+    <div class="w-full md:w-6/12 px-3">
+        <label class="block tracking-wide text-xl font-bold mb-2">
+        Confirm Password
+        </label>
+        <%= password_input f, :password_confirmation, class: "appearance-none block w-full bg-gray-200 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %>
+    </div>
+    </div>
+
+    <p class="text-base mb-12">By registering, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy.</a></p>
+
+    <button class="flex h-16 item-center justify-center w-400 background_clr text-blue-700 hover:text-white px-4 border border-white hover:border-white">
+        <span class="text-white text-2xl outline-none">Create Account</span>
+    </button>
+<% end %>

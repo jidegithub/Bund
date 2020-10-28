@@ -1,0 +1,19 @@
+<div class="flex justify-center items-center w-screen h-auto mt-40">
+  <section>
+  <img src="/images/icons/Bund_M.svg" alt="Bund icon" class="mx-auto bund-icon mb-10">
+  <p class="reset-alert pl-4 pt-1 pb-1">Password link successfully sent</p>
+    <form>        
+      <div>
+        <p class="text-xl my-10 font-bold">Check your email address for a password reset link.</p>
+      </div>
+      <label for="user_email" class="disable-text">Email Address</label>    
+      <input class="w-400" id="user_email" disabled class="disable" name="user[email]" type="text">
+      <div>
+        <button class="w-400 background_clr border-transparent my-16 opacity-50 disabled cursor-not-allowed" type="submit">Request Reset Link</button>    
+      </div>
+    </form>  
+  <div class="text-center">
+    <a class="text-1xl opacity-50 disabled disable-text" href="">Back to sign in</a>    
+  </div>
+  </section>
+</div>

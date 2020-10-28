@@ -1,0 +1,16 @@
+<div class="text-right mr-12 mt-6">
+  <p class="text-xl">You don't have an account? <%= link "Register", to: Routes.login_path(@conn, :index), class: "text-1xl"  %></p>
+</div> 
+<div class="flex justify-center items-center w-screen h-auto mt-40">
+  <section>
+    <img src="/images/icons/Bund_M.svg" alt="Bund icon" class="mx-auto bund-icon mb-10">
+    <h3>Did you forget your password?</h3>
+
+    <%= render "form.html", Map.put(assigns, :action, Routes.pow_reset_password_reset_password_path(@conn, :create)) %>
+    <div class="text-center">
+    <%= link "Back to sign in", to: Routes.login_path(@conn, :index), class: "text-1xl"  %>
+    </div>
+  </section>
+</div>
+
+

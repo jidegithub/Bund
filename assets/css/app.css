@@ -1,0 +1,10 @@
+/* This file is for your main application css. */
+
+@import "../node_modules/tailwindcss/dist/base.css";
+@import "../node_modules/tailwindcss/dist/components.css";
+@import "../node_modules/tailwindcss/dist/utilities.css";
+@import url("//unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css");
+
+@import "./phoenix.css";
+@import "./account.css"
+

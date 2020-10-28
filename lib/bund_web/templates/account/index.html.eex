@@ -1,0 +1,343 @@
+<div id="account">
+  <div id="account-table-toolbar" class="flex h6">
+  <div id="account-select-display" class="relative">
+    <select  class="block appearance-none font-bold account-select w-full bg-gray-200 border border-gray-200 text-gray-700 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+    v-model="selectedNoOfPages"
+    v-on:change="handleNoOfRecordsPerPage()">
+      <option class="active:bg-gray-200" value="20">20 Display Per Page</option>
+      <option class="active:bg-gray-200" value="30">30 Display Per Page</option>
+      <option class="active:bg-gray-200" value="40">40 Display Per Page</option>
+      </select> 
+      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+      <i class="fas fa-chevron-down fill-current h-4 w-4"></i>
+      </div>    
+  </div>
+  <div id="account-select-recent" class="relative">
+    <select  class="block appearance-none font-bold account-select w-full bg-gray-200 border border-gray-200 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+    v-model="dateSelected"
+    v-on:change="setFilterDuration()">
+      <option class="hover:bg-gray-200" value="all">All</option>
+      <option class="hover:bg-gray-200" value="1">Recent One Week</option>
+      <option class="hover:bg-gray-200" value="2">Recent Two Week</option>
+      </select> 
+      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+      <i class="fas fa-chevron-down fill-current h-4 w-4"></i>
+      </div>    
+  </div>
+  <div id="account-search-container" class="relative ml-auto">
+    <input id="account-search" class="block appearance-none font-bold w-full bg-gray-200 border border-gray-200 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+    placeholder=""
+    v-model="search"  
+    type="text"
+    autocomplete="off">
+    <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+    <i class="fas fa-search"></i>
+    </div>
+    
+  </div>
+
+  <button id="account-new" @click="openModal()" class="inline-flex items-center justify-center">
+    <i class="fas fa-plus-circle"></i>
+    <span class="ml-2 leading-tight">New Account</span>
+  </button>
+
+  <button id="account-delete" class="inline-flex mr-8 items-center justify-center ">
+    <i class="fas fa-trash"></i>
+    <span class="ml-2 leading-tight">Delete</span>
+  </button>
+  <div id="account-table-detail" class="font-bold"> {{ table_detail }}</div>
+    <a class="account-navigation" @click="prevClicked()"><i class="fas fa-chevron-left"></i></a>
+    <a class="account-navigation ml-4" @click="nextClicked()"><i class="fas fa-chevron-right"></i></a>
+  </div>
+   
+  <div id="account-table" class="column col-12">
+    <data-tables-server ref="multipleTable" :data="accounts.filter(account => !search || account.company.toLowerCase().includes(search.toLowerCase()))"  @query-change="fetchData('')"   :table-props="tableProps"  :layout="layout" @selection-change="handleSelectionChange">   
+        <el-table-column type="selection" width="55">
+        </el-table-column>
+      
+        <el-table-column label="COMPANY" >
+          <template slot-scope="scope">
+            <span class="cursor-pointer truncate" v-for="button in tableListner(scope.row,'')" :key= "scope.row.company" type="text" class="td_text"
+              @click="button.handler">
+              {{ scope.row.company}}
+            </span>
+          </template>
+        </el-table-column>
+      
+        <el-table-column label="EMAIL">
+          <template slot-scope="scope">
+            <span class="truncate">{{ scope.row.email_address}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="PHONE">
+          <template slot-scope="scope">
+            <span class="truncate">{{ scope.row.phone}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="CONTACT ">
+          <template slot-scope="scope">
+            <span class="truncate">{{ scope.row.contact_person}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="STATUS">
+          <template slot-scope="scope">
+            <span class="truncate">{{ scope.row.status }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="SECTOR">
+          <template slot-scope="scope">
+            <span class="truncate">{{ scope.row.sector }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="LOCATION">
+          <template slot-scope="scope">
+            <span class="truncate">{{ scope.row.state + ", " + scope.row.country }}</span>
+          </template>
+        </el-table-column>
+      <el-table-column label="">
+          <template slot-scope="scope">
+          <span class="cursor-pointer" v-for="button in tableListner(scope.row,'edit')" :key= "scope.row.id"  class="td_text"
+              @click="button.editHandler"> <i class='fas fa-pen fa-sm text-blue-500'></i></span>        
+          
+          <span><i class='fas fa-trash fa-sm text-red-800 ml-8'></i></span>
+
+          </template>
+        </el-table-column>        
+      </data-tables-server>
+  </div>
+      
+  <div id="account-modal" :class="[isAcctModalHidden ? 'hidden' : '']" class="absolute align-center justify-center top-0 min-w-full h-full">
+      <div class="relative top-0 bg-gray-900 w-full h-full opacity-50">
+        
+      </div>
+      <div class="flex items-center justify-center mt-10 flex-row">
+      
+          <div id="account-form" :class="[isAcctFormHidden ? 'hidden' : '']"  class="absolute flex flex-col mt-10 top-0 bg-white w-2/4  px-12 pt-12 pb-10">
+              <div class="font-semibold text-2xl text-blue-800">
+              {{accountHeaderText}}
+              </div>
+              <div v-bind:class="{ hidden: accountErrorText }" class="text-red-700 font-semibold">Form could not be submitted</div>
+
+            <%# Contact %>
+                <div>
+                    
+                    <div class="text-base text-gray-400 font-semibold mt-8">CONTACT</div>
+                    <%# Company and contact %>
+                    <div class="flex flex-wrap -mx-3 mb-0 mt-2">
+                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                          <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                            Company <sup class="text-red-500 text-base">*</sup>
+                          </label>
+                          <div class="flex">
+                         <span v-bind:class="{ hidden: accountFormError.companyError }"> <i  class="fas fa-exclamation-circle -ml-6 mr-2"></i></span>
+                           <input v-model="newAccount.company" @focus="resetError()" class="appearance-none block w-full bg-pink-200 text-base text-gray-700 border border-red-500 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane">
+                          </div>
+                        
+                        </div>
+                        <div class="w-full md:w-1/2 px-3">
+                          <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-last-name">
+                            Contact <sup class="text-red-500 text-base">*</sup>
+                          </label>
+                          <div class="flex">
+                          <input 
+                          class="appearance-none block w-full bg-gray-200 text-base text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                          v-model="newAccount.contact_person" @focus="resetError()" id="grid-last-name" type="text" placeholder="Doe">
+                          <span v-bind:class="{ hidden: accountFormError.contactError }"> <i  class="fas fa-exclamation-circle -mr-6 ml-2"></i></span>
+                          </div>                          
+                        </div>
+                    </div>
+                    <%# Email Address and phone number %>
+                    <div class="flex flex-wrap -mx-3 mb-6">
+                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                          <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                            Email Address <sup class="text-red-500 text-base">*</sup>
+                          </label>
+                          <div class="flex">
+                           <span v-bind:class="{ hidden: accountFormError.emailError }"> <i  class="fas fa-exclamation-circle -ml-6 mr-2"></i></span>
+                           <input v-model="newAccount.email_address" @focus="resetError()" class="appearance-none block w-full bg-gray-200 text-base text-gray-700 border border-red-500 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane">
+                          </div>
+                        </div>
+                        <div class="w-full md:w-1/2 px-3">
+                          <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-last-name">
+                            Phone <sup class="text-red-500 text-base">*</sup>
+                          </label>
+                          <div class="flex">
+                            <input  v-model="newAccount.phone" @focus="resetError()" class="appearance-none block w-full bg-gray-200 text-base text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Doe">
+                            <span v-bind:class="{ hidden: accountFormError.phoneError }"><i  class="fas fa-exclamation-circle -mr-6 ml-2"></i></span>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+              <%# Address %>
+              <div>
+              
+                  <div class="text-base text-gray-400 font-semibold mt-1">ADDRESS</div>
+                  <%# Street %>
+                  <div class="flex flex-wrap -mx-3 mb-0 mt-2">
+                      <div class="w-full  px-3 mb-6 md:mb-0">
+                        <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                          Street <sup class="text-red-500 text-base">*</sup>
+                        </label>
+                        <div class="flex">
+                          <span v-bind:class="{ hidden: accountFormError.streetError }"><i  class="fas fa-exclamation-circle -ml-6 mr-2"></i></span>
+                          <input v-model="newAccount.street" @focus="resetError()" class="appearance-none block w-full bg-gray-200 text-base text-gray-700 border border-red-500 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane">
+                        </div>
+                      </div>
+                    
+                  </div>
+                  <%# Country and State %>
+                  <div class="flex flex-wrap -mx-3 mb-3">
+                      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                          Country <sup class="text-red-500 text-base">*</sup>
+                        </label>
+                        <div class="relative">
+                        <div class="flex">
+                          <span v-bind:class="{ hidden: accountFormError.countryError }"><i  class="fas fa-exclamation-circle -ml-6 mr-2"></i></span>
+                            <select 
+                            v-model="newAccount.country"
+                            v-on:change="loadStates()"
+                            @focus="resetError()"
+                            class="block appearance-none w-full text-base px-4 py-0 border border-gray-400 text-gray-700 leading-none focus:outline-none focus:bg-white focus:border-gray-500">
+                              <option disabled value>Select a Country</option>
+                              <option
+                                v-for="country in countries"
+                                :key="country.id"
+                                :value="country.id"
+                              >{{country.name}}</option>
+                            </select>
+                            
+                        </div>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <i class="fas fa-chevron-down fill-current h-4 w-4"></i>
+                        </div> 
+                      </div>
+                    </div>
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                          State <sup class="text-red-500 text-base">*</sup>
+                        </label>
+                      <div class="flex">
+                        <div class="relative w-full">
+                        <select 
+                        v-model="newAccount.state"
+                        @focus="resetError()"
+                        class="block appearance-none  w-full text-base px-4 py-0 border border-gray-400 text-gray-700 leading-none focus:outline-none focus:bg-white focus:border-gray-500">
+                          <option value disabled>Select State</option>
+                          <option
+                            v-for="state in states"
+                            :key="state.id"
+                            :value="state.name"
+                          >{{state.name}}</option>
+                        </select>                        
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <i class="fas fa-chevron-down fill-current h-4 w-4"></i>
+                        </div>                      
+                        
+                      </div>
+                      <span v-bind:class="{ hidden: accountFormError.stateError }"> <i class="fas fa-exclamation-circle -mr-6 ml-2"></i></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <%# City and Zip Code %>
+                  <div class="flex flex-wrap -mx-3 mt-2">
+                      <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                          City <sup class="text-red-500 text-base">*</sup>
+                        </label>
+                        <div class="flex">
+                          <span v-bind:class="{ hidden: accountFormError.cityError }"> <i  class="fas fa-exclamation-circle -ml-6 mr-2"></i></span>
+                          <input v-model="newAccount.city" @focus="resetError()" class="appearance-none block w-full bg-gray-200 text-base text-gray-700 border border-red-500 py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane">
+                        </div>
+                      </div>
+                      <div class="w-full md:w-1/2 px-3">
+                        <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-last-name">
+                          Zip Code <span class="italic font-medium text-sm">(Optional)</span>
+                        </label>
+                        <input @focus="resetError()" v-model="newAccount.zip" class="appearance-none block w-full bg-gray-200 text-base text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Doe">
+                      </div>
+                  </div>
+              </div>
+
+            <%# Additional Information %>
+            <div>
+                <div class="text-base  text-gray-400 font-semibold mt-1">ADDITIONAL INFORMATION</div>       
+
+                <%# Status and Sector %>
+                <div class="flex flex-wrap -mx-3 mt-1">
+                    <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                        <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                          Status <sup class="text-red-500 text-base">*</sup>
+                        </label>
+                        <div class="relative">
+                        <div class="flex">
+                          <%# <i v-bind:class="{ hidden: accountFormError.statusError }" class="fas fa-exclamation-circle -ml-6 mr-2"></i> %>
+                          <select
+                          v-model="newAccount.status"
+                          @focus="resetError()"
+                          class="block appearance-none  w-full text-base px-4 py-0 border border-gray-400 text-gray-700 leading-none focus:outline-none focus:bg-white focus:border-gray-500">
+                            <option >Engaged</option>
+                            <option> Pending</option>              
+                            <option> Well Engaged </option>
+                          </select>
+                        </div>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <i class="fas fa-chevron-down fill-current h-4 w-4"></i>
+                        </div> 
+                      </div>
+                    </div>
+                    <div class="w-full md:w-1/2 px-3">
+                      <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-last-name">
+                        Sector <sup class="text-red-500 text-base">*</sup>
+                      </label>
+                      <div class="flex">
+                        <input @focus="resetError()" v-model="newAccount.sector" class="appearance-none block w-full bg-gray-200 text-base text-gray-700 border border-gray-200 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Doe">
+                        <span v-bind:class="{ hidden: accountFormError.sectorError }"> <i  class="fas fa-exclamation-circle -mr-6 ml-2"></i></span>
+                      </div>
+                    </div>
+                </div>
+                <%# Note %>
+                <div class="flex flex-wrap -mx-3 mb-0 mt-1">
+                    <div class="w-full  px-3 mb-6 md:mb-0">
+                      <label class="block tracking-wide text-blue-800 text-base font-bold mb-2" for="grid-first-name">
+                        Note <span class="italic font-medium text-sm">(Optional)</span>
+                      </label>
+                      <textarea @focus="resetError()" v-model="newAccount.note" class="block w-full h-16 text-base text-gray-700 border py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane">
+                      </textarea>
+                    
+                    </div>       
+                </div>  
+            </div>    
+
+            <%# Buttons (OK and Cancel)%>
+            <div>
+              <div class="flex flex-wrap mx-0 mt-5">
+                  <div class="ml-auto mx-3">
+                    <button @click="closeNewAccount"
+                    class="inline-flex items-center bg-white border-gray-500 text-blue-800 leading-none justify-center">Cancel</button>   
+                  </div>
+                    <div class="ml-3 ">
+                    <button @click="submitAccount"
+                    class="inline-flex items-center bg-blue-800 leading-none justify-center">{{accountButtonText}}</button>   
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <%# Account Notification %>
+          <div id="account-notification" :class="[isAcctSuccesNotifHidden ? 'hidden' : '']" class="absolute self-center flex flex-col top-0  bg-white w-1/4 mt-64 px-12 py-12">
+              <div class="mx-auto">
+                <span class="mr-6"><i class="fas fa-check-circle fa-2x text-green-800 text-white"></i></span>
+                <span class="font-semibold text-2xl text-blue-800">{{accountNotifMsg}}</span>
+              </div>
+              <div class="mt-8 flex align-center">
+                <button @click="closeModal()" class="inline-flex mx-auto items-center h-8 bg-white border-gray-500 text-blue-800 leading-none justify-center hover:bg-blue-800 hover:text-white">OK</button>  
+              </div>
+          </div>
+      </div>
+  </div>
+   
+</div>
